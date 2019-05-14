@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 14, 2019 at 04:39 PM
+-- Generation Time: May 14, 2019 at 06:08 PM
 -- Server version: 10.1.39-MariaDB
 -- PHP Version: 7.3.5
 
@@ -50,7 +50,7 @@ CREATE TABLE `employee` (
   `addressLine2` varchar(255) NOT NULL,
   `city` varchar(50) NOT NULL,
   `postCode` int(11) UNSIGNED NOT NULL,
-  `email` int(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
   `mobile` int(11) UNSIGNED NOT NULL,
   `sex` enum('M','F','NS') NOT NULL,
   `dateOfBirth` date NOT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE `employee` (
   `emergencyContactName2` varchar(50) DEFAULT NULL,
   `emergencyContactNo2` int(11) DEFAULT NULL,
   `departmentID` int(8) UNSIGNED NOT NULL,
-  `teamLeaderID` int(8) UNSIGNED NOT NULL
+  `teamLeaderID` int(8) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -74,8 +74,8 @@ CREATE TABLE `sitedetail` (
   `siteID` int(8) UNSIGNED NOT NULL,
   `siteName` varchar(100) NOT NULL,
   `siteSuburb` varchar(255) NOT NULL,
-  `SiteCity` varchar(30) NOT NULL,
-  `SiteState` varchar(30) NOT NULL,
+  `siteCity` varchar(30) NOT NULL,
+  `siteState` varchar(30) NOT NULL,
   `siteLongitude` varchar(50) NOT NULL,
   `siteLatitude` varchar(50) NOT NULL,
   `siteContactPersonName` varchar(30) NOT NULL,
@@ -93,31 +93,12 @@ CREATE TABLE `task` (
   `taskID` int(8) UNSIGNED NOT NULL,
   `taskName` varchar(50) NOT NULL,
   `taskDetail` varchar(255) NOT NULL,
-  `siteSuburb` varchar(50) NOT NULL,
-  `siteCity` varchar(30) NOT NULL,
-  `sitePostcode` int(11) UNSIGNED NOT NULL,
   `empID` int(8) UNSIGNED NOT NULL,
   `teamLeaderID` int(8) UNSIGNED NOT NULL,
   `completionFlag` int(1) NOT NULL DEFAULT '0',
   `taskCreated` datetime NOT NULL,
-  `taskCompleted` datetime NOT NULL,
+  `taskCompleted` datetime DEFAULT NULL,
   `siteID` int(8) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `teamleader`
---
-
-CREATE TABLE `teamleader` (
-  `teamLeaderID` int(8) UNSIGNED NOT NULL,
-  `Fname` varchar(30) NOT NULL,
-  `Lname` varchar(30) NOT NULL,
-  `Mobile` int(11) UNSIGNED NOT NULL,
-  `UserName` varchar(30) NOT NULL,
-  `Password` varchar(30) NOT NULL,
-  `Email` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -128,8 +109,7 @@ CREATE TABLE `teamleader` (
 -- Indexes for table `department`
 --
 ALTER TABLE `department`
-  ADD PRIMARY KEY (`departmentID`),
-  ADD KEY `empId_tlId` (`teamLeaderID`);
+  ADD PRIMARY KEY (`departmentID`);
 
 --
 -- Indexes for table `employee`
@@ -137,7 +117,6 @@ ALTER TABLE `department`
 ALTER TABLE `employee`
   ADD PRIMARY KEY (`empID`),
   ADD UNIQUE KEY `username` (`userName`),
-  ADD KEY `tlId_employee_teamLeader` (`teamLeaderID`),
   ADD KEY `dId_employee_department` (`departmentID`);
 
 --
@@ -151,14 +130,8 @@ ALTER TABLE `sitedetail`
 --
 ALTER TABLE `task`
   ADD PRIMARY KEY (`taskID`),
-  ADD KEY `siteId_task_sitedetail` (`siteID`);
-
---
--- Indexes for table `teamleader`
---
-ALTER TABLE `teamleader`
-  ADD PRIMARY KEY (`teamLeaderID`),
-  ADD UNIQUE KEY `tlUserName` (`UserName`);
+  ADD KEY `siteId_task_sitedetail` (`siteID`),
+  ADD KEY `empID_emp_task` (`empID`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -183,12 +156,6 @@ ALTER TABLE `sitedetail`
   MODIFY `siteID` int(8) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `teamleader`
---
-ALTER TABLE `teamleader`
-  MODIFY `teamLeaderID` int(8) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
 -- Constraints for dumped tables
 --
 
@@ -203,13 +170,22 @@ ALTER TABLE `department`
 --
 ALTER TABLE `employee`
   ADD CONSTRAINT `dId_employee_department` FOREIGN KEY (`departmentID`) REFERENCES `department` (`departmentID`),
+  ADD CONSTRAINT `employee_ibfk_1` FOREIGN KEY (`empID`) REFERENCES `task` (`empID`),
   ADD CONSTRAINT `tlId_employee_teamLeader` FOREIGN KEY (`teamLeaderID`) REFERENCES `teamleader` (`teamLeaderID`);
+
+--
+-- Constraints for table `sitedetail`
+--
+ALTER TABLE `sitedetail`
+  ADD CONSTRAINT `sitedetail_ibfk_1` FOREIGN KEY (`siteID`) REFERENCES `task` (`siteID`);
 
 --
 -- Constraints for table `task`
 --
 ALTER TABLE `task`
-  ADD CONSTRAINT `siteId_task_sitedetail` FOREIGN KEY (`siteId`) REFERENCES `sitedetail` (`siteId`);
+  ADD CONSTRAINT `empID_emp_task` FOREIGN KEY (`empID`) REFERENCES `employee` (`empId`),
+  ADD CONSTRAINT `siteId_task_sitedetail` FOREIGN KEY (`siteID`) REFERENCES `sitedetail` (`siteId`),
+  ADD CONSTRAINT `teamLeaderID_task_teamLeader` FOREIGN KEY (`teamLeaderID`) REFERENCES `teamleader` (`teamLeaderID`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
