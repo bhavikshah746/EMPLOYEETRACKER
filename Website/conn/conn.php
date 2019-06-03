@@ -21,7 +21,6 @@ define('DB_NAME', 'test'); // database name<br>
 		} 
 
 		return $this->con;
-	}
-		
+	}	
 }
 ?>
