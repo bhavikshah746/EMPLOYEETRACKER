@@ -1,6 +1,6 @@
 <?php 
 
-require_once("function/func.php");
+require_once("function/Appfunc.php");
 
 $responseArr = array();
 
