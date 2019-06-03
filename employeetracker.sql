@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 03, 2019 at 01:02 PM
+-- Generation Time: Jun 03, 2019 at 01:29 PM
 -- Server version: 5.7.26
 -- PHP Version: 7.2.18
 
@@ -55,21 +55,21 @@ CREATE TABLE IF NOT EXISTS `employee` (
   `city` varchar(50) NOT NULL,
   `postCode` int(11) UNSIGNED NOT NULL,
   `email` varchar(255) NOT NULL,
-  `mobile` int(11) UNSIGNED NOT NULL,
+  `mobile` bigint(11) UNSIGNED NOT NULL,
   `sex` enum('M','F','NS') NOT NULL,
   `dateOfBirth` date NOT NULL,
   `designation` enum('Employee','Teamleader') NOT NULL,
-  `dateOfEntry` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `dateOfEntry` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `emergencyContactName1` varchar(50) NOT NULL,
-  `emergencyContactNo1` int(11) NOT NULL,
+  `emergencyContactNo1` bigint(11) NOT NULL,
   `emergencyContactName2` varchar(50) DEFAULT NULL,
-  `emergencyContactNo2` int(11) DEFAULT NULL,
+  `emergencyContactNo2` bigint(11) DEFAULT NULL,
   `departmentID` int(8) UNSIGNED NOT NULL,
   `teamLeaderID` int(8) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`empID`),
   UNIQUE KEY `username` (`userName`),
   KEY `dId_employee_department` (`departmentID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
