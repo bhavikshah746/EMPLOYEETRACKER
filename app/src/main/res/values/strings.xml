@@ -4,8 +4,8 @@
     <string name="task_Two">Task Two</string>
     <string name="task_Three">Task Three</string>
     <string name="task_Four">Task Four</string>
-    <string name="accept">Accept</string>
-    <string name="content">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</string>
+    <string name="accept">Start</string>
+    <string name="description">Lorem Ipsum is simply dummy text of the printing and typesetting industry. </string>
 
 
 </resources>
