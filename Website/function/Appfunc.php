@@ -64,8 +64,7 @@
 					$returnTask =[];
 					
 					while($row = $result->fetch_assoc()){
-						
-						$returnTask[$row["taskID"]]["TaskName"] =$row["taskName"];
+						$returnTask[$row["taskID"]]["TaskName"] =$row["taskName"]."#".$row["taskID"];
 					}
 					$stmt->close();
 					return $returnTask;	
@@ -83,7 +82,7 @@
 			$query = "SELECT t.taskID, t.taskName, t.taskDetail FROM task as t, employee as e WHERE t.taskID= ? and e.userName  = ? and t.empID = e.empID ";
 
 			if($stmt = $this->con->prepare($query)){
-				$stmt->bind_param('ss',$userName, $taskID);
+				$stmt->bind_param('ss', $taskID, $userName);
 				$stmt->execute();
 				$result = $stmt->get_result();
 				
@@ -92,8 +91,7 @@
 					$returnTaskDetails =[];
 					while($row = $result->fetch_assoc()){
 						
-						$returnTask[$row["taskID"]]["TaskName"] =$row["taskMame"];
-						$returnTask[$row["taskID"]]["TaskDescription"] =$row["taskDetail"];	
+						$returnTask[$row["taskID"]]["TaskName"] =$row["taskName"]."#".$row["taskDetail"];
 					}
 					$stmt->close();
 					return $returnTask;	

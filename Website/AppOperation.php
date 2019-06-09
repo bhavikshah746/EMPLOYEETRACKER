@@ -32,11 +32,10 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 		if(isset($_POST["username"]) && $_POST["username"]!=""){
 			
 			$taskName = [];
-			
 			$taskName = $db->getTask($_POST["username"]);
 			
 			if(!empty($taskName)){
-				$responseArr = $taskName;
+				$responseArr["TaskData"] = $taskName;
 				$responseArr["error"]=false;
 			}else{
 				$responseArr["error"]=true;
@@ -45,15 +44,15 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 		}
 	}else if(isset($_POST["ActionType"]) && $_POST["ActionType"]=="getTaskDetails"){
 		
-		if(isset($_POST["username"]) && $_POST["username"]!="" && isset($_POST["taskID"]) && $_POST["taskID "]!=""){
+		if(isset($_POST["username"]) && $_POST["username"]!=""){
 			
 			$taskDetails = [];
 			$username = $_POST["username"];
 			$taskID = $_POST["taskID"];
-			$taskDetails = $db->getTask($username,$taskID);
+			$taskDetails = $db->getTaskDescription($username,$taskID);
 			
 			if(!empty($taskDetails)){
-				$responseArr = $taskDetails;
+				$responseArr["TaskData"] = $taskDetails;
 				$responseArr["error"]=false;
 			}else{
 				$responseArr["error"]=true;
@@ -67,8 +66,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 			
 			$taskDetails = [];
 			$username = $_POST["username"];
-			$taskID = $_POST["taskID"];
-			$taskDetails = $db->updateLocationFlg($taskID, $username);
+			$taskDetails = $db->checkLocation($username);
 			
 			if(!empty($taskDetails)){
 				$responseArr = $taskDetails;
@@ -86,5 +84,4 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 	}
 	echo json_encode($responseArr);
 }
-
 ?>
