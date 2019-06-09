@@ -1,8 +1,14 @@
 package com.example.emptracker_app;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -26,12 +32,18 @@ public class taskDetails extends AppCompatActivity {
 
     SessionHandler sessionHandler;
     private Button taskBtn;
+    private ActionBar actionBar;
     Button[] buttons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_details);
+
+        actionBar=getSupportActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffd662")));
+        actionBar.setTitle("EMPLOYEE TRACKER");
+
 
         sessionHandler = new SessionHandler(taskDetails.this);
         sessionHandler.checkLogin();
@@ -104,4 +116,24 @@ public class taskDetails extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menuLogout:
+                // SharedPrefManager.getInstance(this).logout();
+                //finish();
+                //break;
+        }
+        return true;
+    }
+
 }
+
+

@@ -2,7 +2,10 @@ package com.example.emptracker_app;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -34,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     RelativeLayout rellayout1, rellayout2;
     private  EditText username, password;
     private Button btnLogin;
+
     SessionHandler sessionHandler;
     Context context;
     //MCrypt mCrypt;
@@ -51,11 +55,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         sessionHandler = new SessionHandler(this);
-        if(sessionHandler.checkLogin()){
+        if(sessionHandler.isLoggin()){
             Log.i("info","Hi");
-            Intent taskListActivity = new Intent(this, taskListActivity.class);
-            startActivity(taskListActivity);
+            //Intent taskListActivity = new Intent(this, taskListActivity.class);
+            //startActivity(taskListActivity);
         }
         rellayout1 = (RelativeLayout) findViewById(R.id.rellayout1);
         rellayout2 = (RelativeLayout) findViewById(R.id.rellayout2);
@@ -75,8 +81,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         if (sessionHandler.checkLogin()) {
 
-            Intent taskListActivity = new Intent(this, taskListActivity.class);
-            startActivity(taskListActivity);
+            //Intent taskListActivity = new Intent(this, taskListActivity.class);
+            //startActivity(taskListActivity);
         }
     }
 

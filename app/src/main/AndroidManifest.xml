@@ -14,7 +14,7 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".taskDetails"></activity>
         <activity android:name=".taskListActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

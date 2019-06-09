@@ -1,10 +1,11 @@
 <resources>
-    <string name="app_name">emptracker_app</string>
+    <string name="app_name">EMPLOYEE TRACKER</string>
     <string name="task_One">Task One</string>
     <string name="task_Two">Task Two</string>
     <string name="task_Three">Task Three</string>
     <string name="task_Four">Task Four</string>
     <string name="accept">Accept</string>
+    <string name="content">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</string>
 
 
 </resources>

@@ -1,9 +1,15 @@
 package com.example.emptracker_app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -27,6 +33,7 @@ import java.util.Map;
 public class taskListActivity extends AppCompatActivity {
 
     SessionHandler sessionHandler;
+    private ActionBar actionBar;
     private Button taskBtn;
     Button[] buttons;
     String status;
@@ -35,6 +42,10 @@ public class taskListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_list);
+
+        actionBar=getSupportActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffd662")));
+        actionBar.setTitle("EMPLOYEE TRACKER");
 
 
         String logInURL = "http://192.168.56.1/website/AppOperation.php";
@@ -45,7 +56,7 @@ public class taskListActivity extends AppCompatActivity {
                 try {
 
                     JSONObject jsonObject = new JSONObject(response);
-
+                    Log.i("msg","["+jsonObject+"]");
                     buttons = new Button[10];
 
                     if(jsonObject.getBoolean("error")==false){
@@ -108,6 +119,22 @@ public class taskListActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menuLogout:
+               // SharedPrefManager.getInstance(this).logout();
+                //finish();
+                //break;
+        }
+        return true;
+    }
     public void taskOne(View view){
         Intent startNewActivity = new Intent(this, taskDetails.class);
         startActivity(startNewActivity);
