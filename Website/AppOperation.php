@@ -9,40 +9,82 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 	
 	$db = new DBFunction();
 	
-	if($_POST["ActionType"] && $_POST["ActionType"]=="checkLogIn"){
+	if(isset($_POST["ActionType"]) && $_POST["ActionType"]=="checkLogIn"){
 		
-		if(isset($_POST['username']) && isset($_POST['password']) ){
+		if(isset($_POST['username']) && isset($_POST['password']) 
+		   	&& $_POST['username'] && $_POST['password']){
 			
 
 			$userArr["username"] = $_POST['username'];
 			$userArr["password"] = $_POST['password'];
 
 			if($db->validateUser($userArr)){
-				$responseArr["error"]=true;
+				$responseArr["error"]=false;
 				$responseArr["Msg"]="Valid User";
 			}else{
-				$responseArr["error"]=false;
+				$responseArr["error"]=true;
 				$responseArr["Msg"]="Issue while validating user. Please contact administrator";
 			}
 		}
 		
-	}else if($_POST["ActionType"] && $_POST["ActionType"]=="getTask"){
+	}else if(isset($_POST["ActionType"]) && $_POST["ActionType"]=="getTask"){
+		
 		if(isset($_POST["username"]) && $_POST["username"]!=""){
-			$username = $_POST["username"];
-			if($db->validateUser($userArr)){
-				$responseArr["error"]=true;
-				$responseArr["Msg"]="Valid User";
-			}else{
+			
+			$taskName = [];
+			
+			$taskName = $db->getTask($_POST["username"]);
+			
+			if(!empty($taskName)){
+				$responseArr = $taskName;
 				$responseArr["error"]=false;
-				$responseArr["Msg"]="Issue while validating user. Please contact administrator";
+			}else{
+				$responseArr["error"]=true;
+				$responseArr["Msg"]="Issue while loading Tasks. Please contact administrator";
+			}
+		}
+	}else if(isset($_POST["ActionType"]) && $_POST["ActionType"]=="getTaskDetails"){
+		
+		if(isset($_POST["username"]) && $_POST["username"]!="" && isset($_POST["taskID"]) && $_POST["taskID "]!=""){
+			
+			$taskDetails = [];
+			$username = $_POST["username"];
+			$taskID = $_POST["taskID"];
+			$taskDetails = $db->getTask($username,$taskID);
+			
+			if(!empty($taskDetails)){
+				$responseArr = $taskDetails;
+				$responseArr["error"]=false;
+			}else{
+				$responseArr["error"]=true;
+				$responseArr["Msg"]="Issue while loading Tasks. Please contact administrator";
+			}
+		}
+	}
+	else if(isset($_POST["ActionType"]) && $_POST["ActionType"]=="ClockOut"){
+		
+		if(isset($_POST["username"]) && $_POST["username"]!=""){
+			
+			$taskDetails = [];
+			$username = $_POST["username"];
+			$taskID = $_POST["taskID"];
+			$taskDetails = $db->updateLocationFlg($taskID, $username);
+			
+			if(!empty($taskDetails)){
+				$responseArr = $taskDetails;
+				$responseArr["error"]=false;
+			}else{
+				$responseArr["error"]=true;
+				$responseArr["Msg"]="Issue while loading Tasks. Please contact administrator";
 			}
 		}
 	}
 	else{
-		$responseArr["error"]=false;
+		$responseArr["error"]=true;
 		$responseArr["Msg"]="Invalid parameters given.";
 		
 	}
 	echo json_encode($responseArr);
 }
+
 ?>
