@@ -1,0 +1,382 @@
+@header_height : 50px;
+@header_background:@primary_dark;
+@nav_height:50px;
+@sub_nav:true;
+
+/*
+|----------------------------------------------------
+|HEADER HALF MENU
+|----------------------------------------------------
+*/
+.header.half{
+    height: @header_height;
+    .m_box_shadow(0 0 2px 0 rgba(0,0,0,0.1));
+    background: @header_background;
+    position: fixed;
+    left:180px;
+    right: 0;
+    top:0;
+    z-index: 9;
+    .h_wrap{
+        height: inherit;
+    }
+    .h_logo_wrap{
+        height: inherit;
+        float:left;
+    }
+    .nav_wrap{
+        float: right;
+    }
+    .h_logo{
+        height: 100%;
+        float: left;
+        width: auto;
+        padding-left:15px;
+		a{
+			text-transform:uppercase;
+			color:#fff;
+			font-weight:100;
+			font-size:18px;
+			&:hover{
+				text-decoration:none;
+				color:#fff;
+			}
+		}
+    }
+   .nav_trigger{
+       float: left;
+       width: @header_height;
+       height: @header_height;
+       padding: 0;
+       margin-left: -20px;
+       display: none;
+    }
+
+    //---------------------------
+    // SIZE : XS
+    //---------------------------
+    @media @xs{
+        height: 50px;
+        .h_logo{
+            img{
+                height: 20px;
+            }
+        }
+        .nav_trigger{
+            display: block;
+        }
+
+    }
+
+}
+
+/*
+|----------------------------------------------------
+|HEDER RIGHT
+|----------------------------------------------------
+*/
+.h_right{
+  float: right;
+}
+
+.n_button{
+  display: block;
+  width: @nav_height;
+  height: @nav_height;
+  text-align: center;
+  position: relative;
+  svg{
+    vertical-align: middle;
+    path{
+      fill:#fff;
+    }
+  }
+}
+
+.n_table_icon{
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  &.occupied{
+    background: #fff;
+  }
+  &.available{
+    border: 3px solid #fff;
+  }
+}
+.n_table_count{
+  width: 18px;
+  line-height:18px;
+  height: 18px;
+  border-radius: 50%;
+  margin: auto;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  &.occupied{
+    background: #ef5350;
+  }
+  &.available{
+    background: #9CCC65;
+  }
+  &.billing{
+    background: #FFCA28;
+  }
+  &.takeaway{
+    background: #2196F3;
+  }
+
+}
+
+.social_links{
+  float: left;
+  margin-top: (@header_height - 20) / 2;
+  >li{
+    height: 20px;
+    float: left;
+    margin-left: 10px;
+    -webkit-filter: grayscale(100%);
+    -moz-filter: grayscale(100%);
+    filter: grayscale(100%);
+    &:hover{
+      -webkit-filter: grayscale(0%);
+      -moz-filter: grayscale(0%);
+      filter: grayscale(0%);
+    }
+  }
+}
+/*
+|----------------------------------------------------
+|NAV
+|----------------------------------------------------
+*/
+.nav_wrap.half{
+    .nav{
+        >li{
+            float: left;
+            position: relative;
+            >a{
+                display: block;
+                height: @nav_height;
+                line-height: @nav_height;
+                color: #fff;
+                text-decoration: none;
+            }
+            &:hover{
+                >a{
+                    background: transparent;
+                }
+                .sub_nav{
+                    display: block;
+                }
+            }
+        }
+    }
+    //---------------------------
+    // WHEN SUB NAV IS ENABLED
+    //---------------------------
+    & when (@sub_nav = true){
+        .sub_nav{
+            display: none;
+            position: absolute;
+            left: 0;
+            background: #fff;
+            z-index: 3;
+            .m_box_shadow(0 0 5px 0 rgba(0,0,0,0.3));
+            >li{
+                >a{
+                    text-decoration: none;
+                    display: block;
+                    height: 35px;
+                    line-height: 35px;
+                    font-size: 14px;
+                    white-space: nowrap;
+                    padding: 0px 30px;
+                    color: #000;
+                    &:hover{
+                       background-color: #f5f5f5;
+                    }
+                }
+                &.active{
+                  background: #f5f5f5!important;
+                }
+            }
+        }
+    }
+
+}
+
+.n_toggle{
+    .nt_menu{
+      position: absolute;
+      right: 0px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      background: #fff;
+      display: none;
+      z-index: 2;
+      width: 400px;
+      -moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+      -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.3);
+	  padding-bottom:40px;
+	  &:before{
+        content: '';
+        width: 10px;
+        height: 10px;
+        background: #fff;
+        position: absolute;
+        top: -5px;
+        right: 20px;
+        -moz-transform: rotateZ(45deg);
+        -webkit-transform: rotateZ(45deg);
+        transform: rotateZ(45deg);
+      }
+      &.open{
+        display:block;
+      }
+	}
+	.fx_show{
+		text-align: center;
+		padding:10px 20px;
+		border-top:1px solid rgba(0,0,0,0.1);
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		left: 0;
+		background:#fff;
+		z-index:12;
+		a{
+			color:#000;
+			text-decoration:none;
+			display:block;
+		}
+	}
+	.unread{
+		background:#f1f1f1;
+		a{
+			color:#37474f;
+		}
+	}
+    .notification_list{
+		max-height:250px;
+		overflow-x:auto;
+		>li{
+			position: relative;
+			z-index: 2;
+			border-bottom:1px solid rgba(0,0,0,0.1);
+			a{
+			  display: block;
+			  padding: 10px 20px;
+			  color: #000;
+			  text-decoration: none;
+			}
+			&:last-child{
+			  border-bottom: none;
+			}
+		}
+	}
+}
+
+/*
+|------------------------------------------------------------
+| MENU
+|------------------------------------------------------------
+*/
+.hamburger {
+    padding: 15px 15px;
+    display: inline-block;
+    cursor: pointer;
+    transition-property: opacity, -webkit-filter;
+    transition-property: opacity, filter;
+    transition-property: opacity, filter, -webkit-filter;
+    transition-duration: 0.15s;
+    transition-timing-function: linear;
+    font: inherit;
+    color: inherit;
+    text-transform: none;
+    background-color: transparent;
+    border: 0;
+    margin: 0;
+    overflow: visible;
+}
+.hamburger:hover{
+    opacity: 0.7;
+}
+.hamburger-box {
+    width: 30px;
+    height: 20px;
+    display: inline-block;
+    position: relative;
+}
+
+.hamburger-inner {
+    display: block;
+    top: 50%;
+    margin-top: -2px;
+}
+.hamburger-inner, .hamburger-inner::before, .hamburger-inner::after {
+    width: 30px;
+    height: 4px;
+    background-color: #fff;
+    border-radius: 4px;
+    position: absolute;
+    transition-property: -webkit-transform;
+    transition-property: transform;
+    transition-property: transform, -webkit-transform;
+    transition-duration: 0.15s;
+    transition-timing-function: ease;
+}
+.hamburger-inner::before, .hamburger-inner::after {
+    content: "";
+    display: block;
+}
+.hamburger-inner::before{
+    top: -10px;
+}
+.hamburger-inner::after{
+    bottom: -10px;
+}
+/*
+ * Elastic
+ */
+.hamburger--elastic .hamburger-inner {
+  top: 2px;
+  transition-duration: 0.4s;
+  transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+.hamburger--elastic .hamburger-inner::before {
+    top: 10px;
+    transition: opacity 0.15s 0.4s ease;
+}
+.hamburger--elastic .hamburger-inner::after {
+    top: 20px;
+    transition: -webkit-transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), -webkit-transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.hamburger--elastic.active .hamburger-inner {
+    -webkit-transform: translate3d(0, 10px, 0) rotate(135deg);
+    transform: translate3d(0, 10px, 0) rotate(135deg);
+    transition-delay: 0.1s;
+}
+.hamburger--elastic.active .hamburger-inner::before {
+    transition-delay: 0s;
+    opacity: 0;
+}
+.hamburger--elastic.active .hamburger-inner::after {
+    -webkit-transform: translate3d(0, -20px, 0) rotate(-270deg);
+    transform: translate3d(0, -20px, 0) rotate(-270deg);
+    transition-delay: 0.1s;
+}

@@ -1,0 +1,65 @@
+
+#takeaways.popup{
+  max-width: 800px;
+  .popup_content{
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .popup_header{
+    .m_box_shadow(0 5px 15px rgba(0,0,0,0.2));
+    z-index: 2;
+  }
+
+}
+.takeaways_wrap{
+  .dataTables_info{
+    padding-left: 30px;
+  }
+}
+.takeaways_table{
+  table-layout: fixed;
+  td.ta_out{
+    background: #E1BEE7!important;
+  }
+  td.ta_cooking{
+    background: #FFECB3!important;
+  }
+  td.ta_cancelled{
+    background: #ffcdd2!important;
+  }
+  td.ta_done{
+    background: #BBDEFB!important;
+  }
+  td{
+    vertical-align: top;
+  }
+  .ta_status{
+    text-align: center;
+  }
+  .ta_status_sort{
+    display: none;
+  }
+  .ta_status_td{
+    vertical-align: middle;
+  }
+  .ta_orders{
+    margin: 0;
+    background: #FFF8E1;
+    padding: 5px 5px 5px 20px;
+    font-size: 13px;
+    border: 1px solid #FFE082;
+    display: none;
+    margin-bottom: 10px;
+    >li{
+      +li{
+        margin-top: 5px;
+      }
+    }
+  }
+  .ta_view_orders{
+    display: block;
+    font-size: 12px;
+    text-decoration: underline;
+    color: @blue;
+  }
+}

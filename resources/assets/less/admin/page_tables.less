@@ -1,0 +1,116 @@
+.tables{
+  .t_title{
+    color: @primary_extra_light;
+    font-weight: 400;
+    margin:20px 0 0 0;
+    text-transform: uppercase;
+  }
+  .t_list{
+    margin: -4px;
+    >li{
+      width: 16.66%;
+      float: left;
+      padding: 4px;
+      position: relative;
+    }
+  }
+}
+
+.table_overlay{
+  .m_position(absolute,4px,4px,44px,4px);
+  //background: fade(@secondary,80%);
+  background: @secondary - 20;
+  padding: 10px;
+  text-align: center;
+  display: none;
+  &.open{
+    display: block;
+  }
+  .to_title{
+    color: #fff;
+    font-size: 14px;
+    font-weight: 300;
+    margin: 0 0 5px 0;
+    height: 24px;
+    line-height: 24px;
+    >li{
+      vertical-align: top;
+    }
+  }
+  .tot_icon{
+    width:24px;
+    svg path{
+      fill:#fff;
+    }
+  }
+  .tot_text{
+    text-align: left;
+    padding-left: 10px;
+  }
+  .tot_number{
+    display: block;
+  }
+  .tot_status{
+    display: block;
+  }
+  .to_actions{
+    >li{
+      margin-bottom: 1px;
+    }
+    .button{
+      width: 100%;
+      border-radius: 0;
+    }
+  }
+}
+
+.table{
+  background: @secondary_extra_light;
+  &.occupied{
+    .t_path{
+      fill:@secondary!important;
+    }
+  }
+  .t_icon{
+    height: 146px;
+    padding: 20px;
+    text-align: center;
+    svg{
+      vertical-align: top;
+      .t_path{
+        fill:@secondary_extra_light;
+        stroke: @secondary;
+        stroke-width: 3;
+        stroke-location:inside;
+      }
+    }
+  }
+}
+
+.t_footer{
+  height:40px;
+  line-height: 40px;
+  background: @secondary;
+  color: #fff;
+  .t_no{
+    width: 40px;
+    text-align: center;
+    margin: 0;
+    float: left;
+  }
+  .t_actions{
+    float: right;
+    >li{
+      float: left;
+      .t_button{
+        padding: 0px 10px;
+        color: #fff;
+        text-decoration: none;
+        display: block;
+        &:hover{
+          background: @secondary_dark;
+        }
+      }
+    }
+  }
+}
