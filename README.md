@@ -1,27 +1,69 @@
-## Laravel PHP Framework
+<a href="http://www.bootstrapdash.com/demo/purple-admin-free" target="_blank"><img src="screenshot.jpg"></a>
 
-[![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
-[![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/framework/v/unstable.svg)](https://packagist.org/packages/laravel/framework)
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
+<h1>PurpleAdmin-Free-Admin-Template</h1>
+Employee Tracker is a free responsive admin template built with Bootstrap 4. The template has colorful, attractive yet simple and elegant design. The template is well crafted, with all the components neatly and carefully designed and arranged within the template.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
+Employee Tracker is packed with all the features that fit your needs but not cramped with components you would not even use. It is an excellent fit to build admin panels, e-commerce systems,  project management systems, CMS or CRM.
 
-Laravel is accessible, yet powerful, providing powerful tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
+Although the template has a design like none other, it is easily customizable to suit your requirements. Employee Tracker comes with a clean and well-commented code that makes it easy to work with the template. Thus making it an ideal pick for jump starting your project.
 
-## Official Documentation
 
-Documentation for the framework can be found on the [Laravel website](http://laravel.com/docs).
+<h1>Credits:</h1>
 
-## Contributing
+- Bootstrap 4
+- Material Design Icons
+- jQuery
+- Gulp
+- Chart.js
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+<h1>Browser Support:</h1>
 
-## Security Vulnerabilities
+Employee Tracker is designed to work flawlessly with all the latest and modern web browsers.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+- Chrome (latest)
+- FireFox (latest)
+- Safari (latest)
+- Opera (latest)
+- IE10+  
 
-### License
+<h1>License Information:</h1>
 
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
+
+Employee Tracker is released under MIT license. Employee Tracker is a free Bootstrap 4 admin template developed from BootstrapDash. Feel free to download it, use it, share it, get creative with it.
+
+<h1>How to use Employee Tracker?</h1>
+
+
+1 - Click the Clone or Download button in GitHub and download as a ZIP file or you can enter the command git clone https://github.com/BootstrapDash/PurpleAdmin-Free-Admin-Template.git in you terminal to get a copy of this template.
+
+2 - After the files have been downloaded you will get a folder with all the required files
+
+3 - You can install all the dependencies in the template by running the command npm install. All the required files are in the node modules.
+
+4 - Find the file named index.html, check what all components you need. Open the file in a text editor and you can start editing.
+
+5 - Now that your project has now kick-started, all you need to do now is to code, code, and code to your heart's content.
+
+<h1>How to Contribute?:</h1>
+
+
+We love your contributions and we welcome them wholeheartedly. We believe the more the merrier.
+To contribute make sure you have a Node.js and npm installed. Now run the command gulp --version. If the command returns with the Gulp version number, it means you have Gulp installed. If not you need to run the command npm install --global gulp-cli to install Gulp.
+
+<h2>Next</h2>
+
+After Gulp has been installed, follow the steps below to contribute.
+  <br>
+	1 - Fork and clone the repo of Employee Tracker.
+  <br>
+	2 - Run the command npm install to install all the dependencies.
+  <br>
+	3 - Enter the command gulp serve. This will open Employee Tracker in your default browser.
+  <br>
+	4 - Make your valuable contribution
+  <br>
+	5 - Submit a pull request.
+  <hr>
+	Do you need a template with more features and functionalities? Get more with our collection of the premium template with more plugins, eye catching animations, UI components, and sample pages all fitting together with a high-quality design.
+Visit
+  <a href="https://www.bootstrapdash.com" target="_blank">https://www.bootstrapdash.com</a> for more admin templates.

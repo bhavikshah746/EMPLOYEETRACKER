@@ -1,8 +1,5 @@
-/vendor
+# Add any directories, files, or patterns you don't want to be tracked by version control
+
 /node_modules
-Homestead.yaml
-Homestead.json
-.env
-/public/uploads/image/*
-/public/uploads/excels/*
-/.idea
+/bower_components
+package-lock.json
