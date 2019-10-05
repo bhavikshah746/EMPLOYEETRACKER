@@ -44,6 +44,26 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 
 		}
 	
+	}else if(isset($_POST["ActionType"]) && $_POST["ActionType"]=="getDashboardData"){
+
+		$dahsboardData = [];
+
+		$dahsboardData = $db->getDashData();
+		
+		if($dahsboardData["successFlg"]==true){
+
+			$responseArr["Data"] = $dahsboardData;
+
+			$responseArr["error"]=false;
+
+		}else{
+
+			$responseArr["error"]=true;
+
+			$responseArr["Msg"]="Issue while loading Tasks. Please contact administrator";
+		}
+		
+
 	}else if(isset($_POST["ActionType"]) && $_POST["ActionType"]=="getEmployeeData"){
 
 		$employeeData = [];
