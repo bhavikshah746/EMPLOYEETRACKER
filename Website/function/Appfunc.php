@@ -60,6 +60,81 @@ Class DBFunction {
 	}
 
 
+	function getDashData(){
+		
+		$dashboardArr = [];
+		
+		$dashboardArr["successFlg"] = true;
+
+		$recentTaskQuery = "Select e.firstName, e.lastName, t.taskID, t.taskName, t.taskCreated from employee e, task t WHERE t.completionFlag= ? AND e.empID = t.empID order by taskCreated desc limit 10";
+
+		if($stmt = $this->con->prepare($recentTaskQuery)){
+			
+			$dashboardArr["recentTask"] = []; 
+
+			$completionFlg = 0;
+
+			$stmt->bind_param('i',$completionFlg);
+
+			$stmt->execute();
+
+			$result = $stmt->get_result();
+		
+			if($result->num_rows > 1 ){
+						
+				while($row = $result->fetch_assoc()){
+					$dashboardArr["recentTask"][$row["taskID"]] =[];
+
+					$dashboardArr["recentTask"][$row["taskID"]]["user"] = $row["firstName"]." ".$row["lastName"];
+					
+					$dashboardArr["recentTask"][$row["taskID"]]["taskName"] = $row["taskName"];
+
+					$dashboardArr["recentTask"][$row["taskID"]]["taskCreated"] = date('d-m-Y', strtotime($row["taskCreated"]));
+				}
+			}
+			
+			$stmt->close();
+
+		}else{
+			$dashboardArr["successFlg"] = false;
+		}
+		
+		$completedTaskQuery = "Select e.firstName, e.lastName, t.taskID, t.taskName, t.taskCreated from employee e, task t WHERE t.completionFlag= ? AND e.empID = t.empID order by taskCreated desc limit 10";
+
+		if($stmt = $this->con->prepare($completedTaskQuery)){
+			$dashboardArr["completedTask"] = []; 
+
+			$completionFlg = 1;
+
+			$stmt->bind_param('i',$completionFlg);
+
+			$stmt->execute();
+
+			$result = $stmt->get_result();
+		
+			if($result->num_rows > 1 ){
+						
+				while($row = $result->fetch_assoc()){
+					$dashboardArr["completedTask"][$row["taskID"]] =[];
+
+					$dashboardArr["completedTask"][$row["taskID"]]["user"] = $row["firstName"]." ".$row["lastName"];
+					
+					$dashboardArr["completedTask"][$row["taskID"]]["taskName"] = $row["taskName"];
+
+					$dashboardArr["completedTask"][$row["taskID"]]["taskCreated"] = $row["taskCreated"];
+				}
+
+			}
+			$stmt->close();
+		}else{
+				
+			$dashboardArr["successFlg"] = false;
+		}
+
+		return $dashboardArr;
+	}
+
+
 	/*Function to get all details of all the employees  */
 	function getEmpData($action, $userID =""){
 		
