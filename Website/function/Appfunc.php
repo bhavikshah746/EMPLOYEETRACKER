@@ -435,6 +435,77 @@ Class DBFunction {
 		}
 		return $returnArr;
 	}
+
+	function getTasks($userID){
+
+		if(!$userType = check_is_admin($userID))	
+			
+
+		if($userType == 1){ //usertype 2 for Super Admin
+			$where = "";
+		}else if ($userType == 2){ //usertype 2 for Team Leader
+			$where = "teamLeaderID = ?";
+		}else{	//Otherwise just an employee
+			$where = "teamLeaderID = ?";
+		}
+
+		$query = "SELECT t.taskID, t.taskName, t.taskDetail FROM task as t, employee as e WHERE t.taskID= ? and e.userName  = ? and t.empID = e.empID ";
+
+		if($stmt = $this->con->prepare($query)){
+
+			$stmt->bind_param('ss', $taskID, $userName);
+
+			$stmt->execute();
+
+			$result = $stmt->get_result();
+
+			if($result->num_rows>0){
+
+				$returnTaskDetails =[];
+
+				while($row = $result->fetch_assoc()){
+					
+					$returnTask[$row["taskID"]]["TaskName"] =$row["taskName"]."#".$row["taskDetail"];
+				
+				}
+
+				$stmt->close();
+
+				return $returnTask;	
+			}
+			$stmt->close();
+		}
+		return false;			
+	}
+
+	//to check if the logged in user is admin or not
+	function check_is_admin($userID){
+
+		if($userID=="" || !is_numeric($userID)){
+			return false;
+		}else{
+			$query = "select * from employee WHERE empID =";
+			if($stmt = $this->con->prepare($query)){
+				
+				$stmt->bind("i",$userID);
+
+				$stmt->execute();
+
+				$result = $stmt->get_result();
+
+				if($result->num_rows>0){
+					
+					$row = $result->fetch_assoc();
+
+					return $row["employee_type"]; 
+					
+
+				}else{
+					return false;
+				}
+			}
+		}
+	}
 }
 
 ?>
