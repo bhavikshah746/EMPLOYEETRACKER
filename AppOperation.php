@@ -7,13 +7,12 @@ $responseArr = array();
 if($_SERVER['REQUEST_METHOD']=='POST'){
 
 	$db = new DBFunction();
-
+	
 	if(isset($_POST["ActionType"]) && $_POST["ActionType"]=="checkLogIn"){	
-
+	
 		if(isset($_POST['username']) && isset($_POST['password']) && $_POST['username'] && $_POST['password']){
 			
 			$userArr["username"] = $_POST['username'];
-
 			$userArr["password"] = $_POST['password'];
 
 			if(isset($_POST['logInType']))
@@ -21,19 +20,23 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 				
 			$resultArr = $db->validateUser($userArr);
 
-			if($resultArr["flg"]==true){
- 
-				if($_POST['logInType']=="portalLogin"){
-
+			if($_POST['logInType']=="portalLogin"){
+				
+				if($resultArr["flg"]==true){
+					
 					$_SESSION["userID"] = $resultArr["userID"];
 					$_SESSION["userName"] = $resultArr["userName"];
-					header('Location:dashboard.php');
 				}
-
+				else{
+					$responseArr["error"] = true;
+					$responseArr["Msg"] = "Invalid Username or Passwrod";
+				}
+			}else if($resultArr["flg"]==true && $_POST['logInType']=="appLogin"){
+				
 				$responseArr["error"]=false;
 				$responseArr["Msg"]="Valid User";
 
-			}else{
+			} else {
 				session_destroy();
 				$responseArr["error"]=true;
 				$responseArr["Msg"]="Issue while validating user. Please contact administrator";
@@ -50,6 +53,27 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 		if($dahsboardData["successFlg"]==true){
 
 			$responseArr["Data"] = $dahsboardData;
+
+			$responseArr["error"]=false;
+
+		}else{
+
+			$responseArr["error"]=true;
+
+			$responseArr["Msg"]="Issue while loading Tasks. Please contact administrator";
+		}
+		
+
+	}else if(isset($_POST["ActionType"]) && $_POST["ActionType"]=="getEmployeeData"){
+
+		$employeeData = [];
+		$action="";
+			
+		$dahsboardData = $db->getEmpData($action);
+		
+		if($dahsboardData["successFlg"]==true){
+
+			$responseArr["Data"] = $dahsboardData["empData"];
 
 			$responseArr["error"]=false;
 
@@ -143,15 +167,58 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 
 		}
 
+	}else if(isset($_POST["ActionType"]) && $_POST["ActionType"]=="deleteEmp"){
+		
+		//validation to check if it's admin or team leader
+		$dahsboardData = $db->deleteEmp($id);
+
+	}else if(isset($_POST["ActionType"]) && $_POST["ActionType"]=="getProfileData"){
+
+		if(isset($_POST["userID"]) && $_POST["userID"]!=""){
+			$userID = $_POST["userID"];
+
+		} else if( isset($_SESSION["userID"]) && $_SESSION["userID"]!=""){
+
+			$userID = $_SESSION["userID"];
+
+			$data = [];
+
+			$data = $db->getEmpData("getProfile",$userID);
+			
+
+			if(!empty($data)){
+
+				$responseArr["empData"] = $data["empData"];
+				$responseArr["error"]=false;
+
+			}else{
+
+				$responseArr["error"]=true;
+				$responseArr["Msg"]="Issue while loading Tasks. Please contact administrator";
+			}
+
+		}
+
+	}else if(isset($_POST["ActionType"]) && $_POST["ActionType"]=="getProfileData"){
+
+		$userID = $_SESSION["userID"];
+		$data = [];
+		$data = $db->getEmpData("getProfile",$userID);
+
+		if(!empty($data)){
+
+			$responseArr["empData"] = $data["empData"];
+			$responseArr["error"]=false;
+		}else{
+			$responseArr["error"]=true;
+			$responseArr["Msg"]="Issue while loading Tasks. Please contact administrator";
+		}
 	}
 
-	else{
+	}else{
 
 		$responseArr["error"]=true;
-
 		$responseArr["Msg"]="Invalid parameters given.";
-
-
 	}
 
 	echo json_encode($responseArr);

@@ -41,7 +41,8 @@ if (session_status() == PHP_SESSION_NONE) {
         <div class="main-panel">
           <div class="content-wrapper">
             <div class="page-header">
-              <h3 class="page-title"> Employee Details </h3>
+              <h3 class="page-title"> Task Details</h3>
+              <button type="button" class="btn btn-info">Add New Task</button>
             </div>
 
             <div class="row">
