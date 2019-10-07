@@ -363,7 +363,7 @@ Class DBFunction {
 
 			}else{
 
-				$stmt->close();
+				$stmt->close();	
 
 				return false;	
 			}
@@ -436,41 +436,70 @@ Class DBFunction {
 		return $returnArr;
 	}
 
-	function getTasks($userID){
+	function getTasks($userName, $taskStatus="ongoing"){
+		
+		//to select ongoing or compelted tasks
+		if($taskStatus=="ongoing")
+			$completionFlg = 0;
+		else
+			$completionFlg = 1;
 
-		if(!$userType = check_is_admin($userID))	
-			
-
-		if($userType == 1){ //usertype 2 for Super Admin
-			$where = "";
-		}else if ($userType == 2){ //usertype 2 for Team Leader
-			$where = "teamLeaderID = ?";
-		}else{	//Otherwise just an employee
-			$where = "teamLeaderID = ?";
+		if($userName==""){	
+			header("Location: error.php");
 		}
 
-		$query = "SELECT t.taskID, t.taskName, t.taskDetail FROM task as t, employee as e WHERE t.taskID= ? and e.userName  = ? and t.empID = e.empID ";
+		$empID = $this->getEmpID($userName);
+		$userType = $this->check_is_admin($userName);
+		
+		if($userType=="" || $userType = false)	
+			header("Location: error.php");
 
+		$where = "";
+		if($userType == 1){ //usertype 1 for Super Admin
+			$where = " and t.is_delete = ? "	;
+
+		}else if ($userType == 2){ //usertype 2 for Team Leader
+			$where = "and t.is_deleted = ? and t.teamLeaderID = ?";
+			
+		}else{ //Otherwise just an employee
+			$where = "and t.is_deleted = ? and t.empID = ?";
+		}
+
+		$query = "SELECT t.taskID, t.taskName,t.empID, t.teamLeaderID, t.taskCreated, t.taskStarted, t.taskDetail, e.firstName, e.lastName FROM task as t, employee as e WHERE t.empID = e.empID ".$where. " and t.completionFlag = ? ";
+		
 		if($stmt = $this->con->prepare($query)){
+							
+			$is_deleted = $taskCompleted = 0;
+			
+			if($userType == 1){
+				$stmt->bind_param('ii',0, $completionFlg);
 
-			$stmt->bind_param('ss', $taskID, $userName);
+			}else{
+				$stmt->bind_param('iii', $is_deleted, $empID, $completionFlg);
+
+			}
 
 			$stmt->execute();
 
 			$result = $stmt->get_result();
-
+			
 			if($result->num_rows>0){
 
 				$returnTaskDetails =[];
-
+				
 				while($row = $result->fetch_assoc()){
 					
-					$returnTask[$row["taskID"]]["TaskName"] =$row["taskName"]."#".$row["taskDetail"];
+					$returnTask[$row["taskID"]] = [];
+					$returnTask[$row["taskID"]]["taskname"]=$row["taskName"];
+					$returnTask[$row["taskID"]]["task_assigned_to"] = $row["firstName"]." ".$row["lastName"];
+					$returnTask[$row["taskID"]]["task_assigned_by"]= $this->getEmpName($row["teamLeaderID"]);
+					$returnTask[$row["taskID"]]["date_created"]=date('d-M-Y', strtotime($row["taskCreated"]));
+					$taskStarted = ($row["taskStarted"] == '0000-00-00 00:00:00' || $row["taskStarted"]=="")? "Not Started Yet" : date('d-M-Y', strtotime($row["taskStarted"]));
+					$returnTask[$row["taskID"]]["task_started_date"]= $taskStarted;
+					$returnTask[$row["taskID"]]["task_detail"]=$row["taskDetail"];
 				
 				}
-
-				$stmt->close();
-
+				
 				return $returnTask;	
 			}
 			$stmt->close();
@@ -479,30 +508,78 @@ Class DBFunction {
 	}
 
 	//to check if the logged in user is admin or not
-	function check_is_admin($userID){
-
-		if($userID=="" || !is_numeric($userID)){
+	function check_is_admin($userName){
+		
+		if($userName==""){
 			return false;
+
 		}else{
-			$query = "select * from employee WHERE empID =";
+			$query = "SELECT * FROM employee WHERE userName = ?";
+			
 			if($stmt = $this->con->prepare($query)){
 				
-				$stmt->bind("i",$userID);
+				$stmt->bind_param("s",$userName);
 
-				$stmt->execute();
+				 $stmt->execute();
 
 				$result = $stmt->get_result();
 
 				if($result->num_rows>0){
-					
 					$row = $result->fetch_assoc();
 
 					return $row["employee_type"]; 
-					
 
 				}else{
 					return false;
 				}
+			}
+		}
+	}
+
+	//function to get employee ID from userName
+	function getEmpID($userName){
+
+		$query = "SELECT empID FROM employee WHERE userName = ?";
+			
+		if($stmt = $this->con->prepare($query)){
+			
+			$stmt->bind_param("s",$userName);
+
+				$stmt->execute();
+
+			$result = $stmt->get_result();
+
+			if($result->num_rows>0){
+				$row = $result->fetch_assoc();
+				return $row["empID"]; 
+
+			}else{
+				return false;
+			}
+		}
+	}
+
+	//function to get employee name from employeeID
+	function getEmpName($empID){
+
+		$query = "SELECT firstName, lastName FROM employee WHERE empID = ?";
+			
+		if($stmt = $this->con->prepare($query)){
+			
+			$stmt->bind_param("i",$empID);
+
+				$stmt->execute();
+
+			$result = $stmt->get_result();
+
+			if($result->num_rows>0){
+				
+				$row = $result->fetch_assoc();
+				
+				return $row["firstName"]." ".$row["lastName"]; 
+
+			}else{
+				return false;
 			}
 		}
 	}
