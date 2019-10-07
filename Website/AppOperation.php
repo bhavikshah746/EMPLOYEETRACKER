@@ -199,8 +199,22 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 
 		}
 
-	}
-	else{
+	}else if(isset($_POST["ActionType"]) && $_POST["ActionType"]=="getPortalTasks"){
+
+		$userID = $_SESSION["userID"];
+		$taskStatus = $_POST["TaskStatus"];
+		$data = [];
+		$data = $db->getTasks($userID, $taskStatus);
+
+		if(!empty($data)){
+
+			$responseArr["taskData"] = $data;
+			$responseArr["error"]=false;
+		}else{
+			$responseArr["error"]=true;
+			$responseArr["Msg"]="Issue while loading Tasks. Please contact administrator";
+		}
+	}else{
 
 		$responseArr["error"]=true;
 		$responseArr["Msg"]="Invalid parameters given.";
