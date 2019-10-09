@@ -69,7 +69,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 		$employeeData = [];
 		$action="";
 			
-		$dahsboardData = $db->getEmpData($action);
+		$dahsboardData = $db->getEmpData("","",$_POST["userStatus"]);
 		
 		if($dahsboardData["successFlg"]==true){
 
@@ -93,10 +93,9 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 
 			$taskName = $db->getTask($_POST["username"]);
 			
+			if($taskName){
 
-			if(!empty($taskName)){
-
-				$responseArr["TaskData"] = $taskName;
+				$responseArr["Msg"] = "Record Inserted Successfully.";
 
 				$responseArr["error"]=false;
 
@@ -104,7 +103,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 
 				$responseArr["error"]=true;
 
-				$responseArr["Msg"]="Issue while loading Tasks. Please contact administrator";
+				$responseArr["Msg"]="Issue while performing operation. Please contact administrator";
 			}
 
 		}
@@ -170,7 +169,16 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 	}else if(isset($_POST["ActionType"]) && $_POST["ActionType"]=="deleteEmp"){
 		
 		//validation to check if it's admin or team leader
-		$dahsboardData = $db->deleteEmp($id);
+		$data = $db->deleteEmp($_POST["delete"]);
+		if($data["error"]==false){
+
+			$responseArr["Msg"]=$data["msg"];
+			$responseArr["error"]=false;
+		}else{
+			$responseArr["error"]=true;
+			$responseArr["Msg"]="Issue while loading Tasks. Please contact administrator";
+		}
+
 
 	}else if(isset($_POST["ActionType"]) && $_POST["ActionType"]=="getProfileData"){
 
@@ -209,6 +217,18 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 		if(!empty($data)){
 
 			$responseArr["taskData"] = $data;
+			$responseArr["error"]=false;
+		}else{
+			$responseArr["error"]=true;
+			$responseArr["Msg"]="Issue while loading Tasks. Please contact administrator";
+		}
+	}else if(isset($_POST["ActionType"]) && $_POST["ActionType"]=="AddTask"){
+
+		$data = $db->addTaskData($_POST);
+
+		if($data["error"]==false){
+
+			$responseArr["Msg"]="Added Successfully";
 			$responseArr["error"]=false;
 		}else{
 			$responseArr["error"]=true;

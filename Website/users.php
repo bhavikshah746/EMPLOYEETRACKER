@@ -42,12 +42,21 @@ if(empty($_SESSION) || (isset($_SESSION["empID"]) && $_SESSION["empID"]=="")){
           <div class="content-wrapper">
             <div class="page-header">
               <h3 class="page-title"> Employee Details </h3><h3 class="page-title"></h3>
-              <h3 class="page-title"></h3><h3 class="page-title"></h3>
-              <h3 class="page-title"></h3><h3 class="page-title"></h3>
-              <h3 class="page-title"></h3>
+
+              <div>
+                <div class="form-check">
+                  <label class="form-check-label">
+                  <input type="radio" class="form-check-input" name="taskStatus" id="archived" value="active" onclick="loadGrid(this.value)" checked> Active </label>
+                  </div>
+                </div>
+                
+                <div class="col-sm-5">
+                  <div class="form-check">
+                    <label class="form-check-label">
+                      <input type="radio" class="form-check-input" name="taskStatus" id="archived" value="archived" onclick="loadGrid(this.value)"> Archived</label>
+                  </div>
+                </div>
               <button type="button" class="btn btn-info">Add New Employee</button>
-              <button type="button" class="btn btn-info">View Archived Users</button>
-              
             </div>
 
             <div class="row">
@@ -63,7 +72,7 @@ if(empty($_SESSION) || (isset($_SESSION["empID"]) && $_SESSION["empID"]=="")){
                           <th> Employee User ID </th>
                           <th> Mobile </th>
                           <th> Email </th>
-                          <th> Actions </th>
+                          <th id="action"> Actions </th>
                         </tr>
                       
                       </thead>

@@ -136,24 +136,45 @@ Class DBFunction {
 
 
 	/*Function to get all details of all the employees  */
-	function getEmpData($action, $userID =""){
+	function getEmpData($action,$userID ="",  $userStatus="active"){
 		
 		$returnArr =[];
 		$returnArr["successFlg"] = true;
 		$where = "";  $selectStr = "*"; $queryStr ="";
+		
+		$userType = $this->check_user_type($_SESSION["userID"]);
+		
+		$archiveQry ="";
+		
+		if($userStatus == "active")
+			$archiveQry = " and archivedFlg = 0 ";
+		
+		else if($userStatus == "archived")
+			$archiveQry = " and archivedFlg = 1 ";
+
+		if($userType==2){//for teamLeader
+			$queryStr = " and teamLeaderID = ?";
+		}
 
 		//If action is to get user profile then we will add this to the SQL query
-		($action == "getProfile")?$where=" where userName = ? ":$queryStr = "order by dateOfJoining desc";
+		($action == "getProfile")?$where=" where userName = ? ":$where = " where employee_type != ? ".$queryStr;
+		
 
 
-		$empDataQry = "Select ".$selectStr." from employee ".$where." ".$queryStr;
+		$empDataQry = "Select ".$selectStr." from employee ".$where." ".$archiveQry." ".$queryStr." order by dateOfJoining desc";;
 		
 		if($stmt = $this->con->prepare($empDataQry)){
 			
 			$empDataArr = [];
-		
-			($action == "getProfile") ?$stmt->bind_param('s',$userID):"";
-			
+			$userType = 1;
+			if($action == "getProfile"){
+				$stmt->bind_param('s',$userID);
+			}else{
+				if($userType==2 && $queryStr!="")
+					$stmt->bind_param('ii',$userType,$_SESSION["userID"]);
+				else
+					$stmt->bind_param('i',$userType);
+			}
 			if($stmt->execute()){
 
 				$result = $stmt->get_result();
@@ -408,31 +429,30 @@ Class DBFunction {
 	
 	function deleteEmp($id){
 		
-		if($_SESSION["userType"] == "admin"){
+		$userType = $this->check_user_type($_SESSION["userID"]);
 
-			$deleteQry = "update employee SET archivedFlg = ?";
+		if($userType == "1"){
+			$flg= 1;
+			$deleteQry = "UPDATE employee SET archivedFlg = ? WHERE empID =?";
 			
 			if($stmt = $this->con->prepare($deleteQry)){
 				
-				$stmt->bind_param('i',0);
+				$stmt->bind_param('ii', $flg, $id);
 
 				if($stmt->execute()){
-					$result = $stmt->get_result();
-				
-					if($result->num_rows()==1){
+
+					if($stmt->affected_rows==1 || $stmt->affected_rows==0){
+						$returnArr["error"]= false;				
 						
-						$returnArr["error"]="";
-						
-						$returnArr["msg"]="";
+						$returnArr["msg"]="Deleted Successfully";
 					}
 				}
 			}
 		}else {
 			
-			$returnArr["error"] = "true";
-
-			$returnArr["msg"] = "Not authorise to perform this operation";
+			$returnArr["error"] = true;
 		}
+
 		return $returnArr;
 	}
 
@@ -449,14 +469,14 @@ Class DBFunction {
 		}
 
 		$empID = $this->getEmpID($userName);
-		$userType = $this->check_is_admin($userName);
-		
-		if($userType=="" || $userType = false)	
+		$userType = $this->check_user_type($userName);
+
+		if($userType=="" || $userType == false)	
 			header("Location: error.php");
 
 		$where = "";
-		if($userType == 1){ //usertype 1 for Super Admin
-			$where = " and t.is_delete = ? "	;
+		if($userType == "1"){ //usertype 1 for Super Admin
+			$where = " and t.is_deleted = ? "	;
 
 		}else if ($userType == 2){ //usertype 2 for Team Leader
 			$where = "and t.is_deleted = ? and t.teamLeaderID = ?";
@@ -466,13 +486,13 @@ Class DBFunction {
 		}
 
 		$query = "SELECT t.taskID, t.taskName,t.empID, t.teamLeaderID, t.taskCreated, t.taskStarted, t.taskDetail, e.firstName, e.lastName FROM task as t, employee as e WHERE t.empID = e.empID ".$where. " and t.completionFlag = ? ";
-		
+//echo $query;die;
 		if($stmt = $this->con->prepare($query)){
 							
 			$is_deleted = $taskCompleted = 0;
 			
 			if($userType == 1){
-				$stmt->bind_param('ii',0, $completionFlg);
+				$stmt->bind_param('ii',$is_deleted, $completionFlg);
 
 			}else{
 				$stmt->bind_param('iii', $is_deleted, $empID, $completionFlg);
@@ -508,13 +528,13 @@ Class DBFunction {
 	}
 
 	//to check if the logged in user is admin or not
-	function check_is_admin($userName){
+	function check_user_type($userName){
 		
 		if($userName==""){
 			return false;
 
 		}else{
-			$query = "SELECT * FROM employee WHERE userName = ?";
+			$query = "SELECT employee_type FROM employee WHERE userName = ?";
 			
 			if($stmt = $this->con->prepare($query)){
 				
@@ -560,26 +580,158 @@ Class DBFunction {
 	}
 
 	//function to get employee name from employeeID
-	function getEmpName($empID){
+	function getEmpName($empID=""){
 
-		$query = "SELECT firstName, lastName FROM employee WHERE empID = ?";
-			
-		if($stmt = $this->con->prepare($query)){
-			
-			$stmt->bind_param("i",$empID);
+		$userType = $this->check_user_type($empID);
+		$where="";
+
+		if($userType!=3){
+			if($userType==2){
+				$where = " WHERE teamLeaderID = ?";
+			}else 
+				$where = " WHERE employee_type!=1";
+
+			$query = "SELECT empID, firstName, lastName FROM employee ".$where;
+
+			if($stmt = $this->con->prepare($query)){
+				if($userType==2){
+					$stmt->bind_param("i",$empID);
+				}	
 
 				$stmt->execute();
 
-			$result = $stmt->get_result();
+				$result = $stmt->get_result();
 
-			if($result->num_rows>0){
+				if($result->num_rows>0){
 				
-				$row = $result->fetch_assoc();
-				
-				return $row["firstName"]." ".$row["lastName"]; 
+					if($empID!=""){
+						$row = $result->fetch_assoc();
+						return $row["firstName"]." ".$row["lastName"]; 
+					}else{	
+						$userArr = [];
+						while($row = $result->fetch_assoc()){
+							$userArr[$row["empID"]] = $row["firstName"]." ".$row["lastName"]; 
+						}
+						return $userArr;
+					}
+				}else{
+					return false;
+				}
+			}
+		}
+	}
 
-			}else{
-				return false;
+	//function add new task in tbl sitedetails and task
+	function addTaskData($dataArr){
+		
+		$streetAddress = $suburb = $area1 = $area2 = $postCode = $lat = $lng = "" ;
+
+		if(isset($dataArr["streetAddress"]) && $dataArr["streetAddress"]!=""){
+			$streetAddress = $dataArr["streetAddress"];
+		}
+
+		if(isset($dataArr["suburb"]) && $dataArr["suburb"]!=""){
+			$suburb = $dataArr["suburb"];
+		}
+
+		if(isset($dataArr["city"]) && $dataArr["city"]!=""){
+			$city = $dataArr["city"];
+		}
+
+		if(isset($dataArr["State"]) && $dataArr["State"]!=""){
+			$state = $dataArr["State"];
+		}
+
+		if(isset($dataArr["postal_code"]) && $dataArr["postal_code"]!="" && is_numeric($dataArr["postal_code"])){
+			$postCode = $dataArr["postal_code"];
+		}
+
+		if(isset($dataArr["lat"]) && $dataArr["lat"]!="" && isset($dataArr["lng"]) && $dataArr["lng"]!=""){
+			$lat = $dataArr["lat"];
+			$lng = $dataArr["lng"];
+		}
+
+		//Query to insert site details in the sitedetail table
+		$site_query = "INSERT INTO `sitedetail`(`streetAddress`, `siteSuburb`, `siteCity`, `siteState`, `siteLongitude`, `siteLatitude`, `siteCityPostcode`) VALUE (?,?,?,?,?,?,?)";
+		if($stmt = $this->con->prepare($site_query)){
+
+			$stmt->bind_param("ssssssi",$streetAddress,$suburb, $city,$state, $lng, $lat, $postCode);
+			
+			$stmt->execute();
+
+			$siteID = $stmt->insert_id;
+			
+		}else{
+			return false;
+		}
+
+		if($siteID!="" && is_numeric($siteID)){
+			
+			$task_name = $task_details = $userID ="";
+
+			if(!isset($dataArr["taskName"]) || $dataArr["taskName"]=="")
+				header("Location: error.php");			
+			else
+				$task_name = $dataArr["taskName"];
+
+			if(!isset($dataArr["taskDetails"]) || $dataArr["taskDetails"]=="")
+				header("Location: error.php");			
+			else	
+				$task_details = $dataArr["taskDetails"];
+
+			if(!isset($dataArr["userID"]) || $dataArr["userID"]=="")
+				header("Location: error.php");			
+			else	
+				$userID = $dataArr["userID"];
+
+
+			$temLeaderID = $this->getTeamLeader($userID);
+			if($temLeaderID==""){
+				//super admin
+				$temLeaderID = 1;
+			}
+
+			$task_query = "INSERT INTO `task`(`taskName`, `taskDetail`, `empID`, `teamLeaderID`, `siteID`) VALUES (?,?,?,?,?)";
+
+			if($stmt = $this->con->prepare($task_query)){
+				
+				$stmt->bind_param("ssiii",$task_name , $task_details, $userID, $temLeaderID, $siteID);
+					
+				$stmt->execute();
+				
+				if($stmt->insert_id!="" || $stmt->insert_id!=0)
+					return true;
+			}
+			return false;
+		}else{
+			header("Location: error.php");			
+		}
+	}
+
+	//function to get team leader ID
+	function getTeamLeader($empID){
+		
+		if($empID!=""){
+
+			$query = "SELECT * FROM employee WHERE empID = ?";
+			
+			if($stmt = $this->con->prepare($query)){
+				
+				$stmt->bind_param("i",$empID);
+
+				$stmt->execute();
+
+				$result = $stmt->get_result();
+				
+				if($result->num_rows>0){
+					$row = $result->fetch_assoc();
+					
+					return $row["teamLeaderID"]; 
+
+				}else{
+				
+					return false;
+				}
 			}
 		}
 	}

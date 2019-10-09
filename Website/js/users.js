@@ -1,13 +1,17 @@
 
 //When dashboard the page has loaded.
 $(document).ready(function(){
-    
+    loadGrid();
+});
+
+ function loadGrid(userFlg="active"){
     //Perform Ajax request.
+
     $.ajax({
         dataType: "json",
         url: 'AppOperation.php',
         type: 'POST',
-        data: {ActionType:"getEmployeeData"},
+        data: {ActionType:"getEmployeeData", userStatus:userFlg},
         success: function(response){
             
             //If the success function is execute,
@@ -15,25 +19,22 @@ $(document).ready(function(){
             //Add the data we received in our Ajax
             //request to the "content" div.
             var dataArray = response;
-            createTable(dataArray["Data"], "userTbl");
+            createTable(dataArray["Data"], "userTbl", userFlg);
         },
         error: function (xhr, ajaxOptions, thrownError) {
             var errorMsg = 'Ajax request failed: ' + xhr.responseText;
             
           }
     });
+ }
 
-
-
-});
-
- 
 //a common function to create table
 //parameters are data object, table name respectively
-function createTable(dataObj,tblName){
+function createTable(dataObj,tblName, userFlg){
     
     var tbl = $("#"+tblName);
-  
+    $("#"+tblName+ " tbody").empty();
+
     for(emp in dataObj){        
         //console.log(dataObj[emp]);
         //creating new tr for user table
@@ -58,27 +59,32 @@ function createTable(dataObj,tblName){
         empEmail.html(dataObj[emp].mailID);
         tr.append(empEmail);
         
-        var actions = $("<td></td>");
-        
-        var aLinkEdit = $("<a></a>").attr("href","#");
-        var aLinkDeactive = $("<a></a>").css({"cursor":"pointer","color":"royalblue"}).attr("onClick","deleteUser("+emp+")","href","");
-        
-        var iLinkEdit = $("<i></i>").addClass("mdi mdi-account-details menu-icon mdi-24px");
-        var iLinkDeactive = $("<i></i>").addClass("mdi mdi-delete menu-icon mdi-24px");
-        
-        //Appending i tag to the anchor tag//
-        aLinkEdit.append(iLinkEdit);
-        aLinkDeactive.append(iLinkDeactive);
+        if(userFlg=="active"){
 
-        //appending achor tag to the Action TD
-        actions.append(aLinkEdit); 
-        actions.append("&emsp;&emsp;")
-        actions.append(aLinkDeactive); 
-        /*End creating data column*/
-        
-        tr.append(actions);
-        /*End appending table data */
-        
+            $("#action").show();
+            var actions = $("<td></td>");
+            
+            var aLinkEdit = $("<a></a>").attr("href","#");
+            var aLinkDeactive = $("<a></a>").css({"cursor":"pointer","color":"royalblue"}).attr("onClick","deleteUser("+emp+")","href","");
+            
+            var iLinkEdit = $("<i></i>").addClass("mdi mdi-account-details menu-icon mdi-24px");
+            var iLinkDeactive = $("<i></i>").addClass("mdi mdi-delete menu-icon mdi-24px");
+            
+            //Appending i tag to the anchor tag//
+            aLinkEdit.append(iLinkEdit);
+            aLinkDeactive.append(iLinkDeactive);
+
+            //appending achor tag to the Action TD
+            actions.append(aLinkEdit); 
+            actions.append("&emsp;&emsp;")
+            actions.append(aLinkDeactive); 
+            /*End creating data column*/
+            
+            tr.append(actions);
+            /*End appending table data */
+        }else{
+            $("#action").hide();
+        }
         tbl.append(tr);        
     }
 }
@@ -94,7 +100,7 @@ function deleteUser(id){
         method: "POST",
         success: function(response){
             if(response["error"]== "false" && response["operation"] == "success"){
-                alert("Record deleted successfully.")
+                alert(JSON.stringify(response["Msg"]));
             }
         },
         error: function(xhr){

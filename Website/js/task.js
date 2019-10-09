@@ -19,7 +19,7 @@ $(document).ready(function(){
             //Add the data we received in our Ajax
             //request to the "content" div.
             var dataArray = response;
-            createTable(dataArray["taskData"], "taskTbl");
+            createTable(dataArray["taskData"], "taskTbl", taskStatus);
         },
         error: function (xhr, ajaxOptions, thrownError) {
             var errorMsg = 'Ajax request failed: ' + xhr.responseText;
@@ -29,7 +29,7 @@ $(document).ready(function(){
  }
 //a common function to create table
 //parameters are data object, table name respectively
-function createTable(dataObj,tblName){
+function createTable(dataObj,tblName, taskStatus){
     
     var tbl = $("#"+tblName);
     $("#"+tblName+ " tbody").empty();
@@ -61,26 +61,28 @@ function createTable(dataObj,tblName){
         date_task_started.html(dataObj[taskID].task_started_date);
         tr.append(date_task_started);
         
-        var actions = $("<td></td>");
-        
-        var aLinkEdit = $("<a></a>").attr("href","#");
-        var aLinkDeactive = $("<a></a>").css({"cursor":"pointer","color":"royalblue"}).attr("onClick","deleteUser("+taskID+")","href","");
-        
-        var iLinkEdit = $("<i></i>").addClass("mdi mdi-account-details menu-icon mdi-24px");
-        var iLinkDeactive = $("<i></i>").addClass("mdi mdi-delete menu-icon mdi-24px");
-        
-        //Appending i tag to the anchor tag//
-        aLinkEdit.append(iLinkEdit);
-        aLinkDeactive.append(iLinkDeactive);
+        if(taskStatus=="ongoing"){
+            var actions = $("<td></td>");
+            
+            var aLinkEdit = $("<a></a>").attr("href","#");
+            var aLinkDeactive = $("<a></a>").css({"cursor":"pointer","color":"royalblue"}).attr("onClick","deleteUser("+taskID+")","href","");
+            
+            var iLinkEdit = $("<i></i>").addClass("mdi mdi-account-details menu-icon mdi-24px");
+            var iLinkDeactive = $("<i></i>").addClass("mdi mdi-delete menu-icon mdi-24px");
+            
+            //Appending i tag to the anchor tag//
+            aLinkEdit.append(iLinkEdit);
+            aLinkDeactive.append(iLinkDeactive);
 
-        //appending achor tag to the Action TD
-        actions.append(aLinkEdit); 
-        actions.append("&emsp;&emsp;")
-        actions.append(aLinkDeactive); 
-        /*End creating data column*/
-        
-        tr.append(actions);
-        /*End appending table data */
+            //appending achor tag to the Action TD
+            actions.append(aLinkEdit); 
+            actions.append("&emsp;&emsp;")
+            actions.append(aLinkDeactive); 
+            /*End creating data column*/
+            
+            tr.append(actions);
+            /*End appending table data */
+        }
         
         tbl.append(tr);        
     }
@@ -105,4 +107,5 @@ function deleteUser(id){
         }
     });
 }
+
 
